@@ -1,29 +1,26 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useRootStore } from '@/stores/root.store';
+import { useI18n } from '@/composables/useI18n';
+
+const rootStore = useRootStore();
+const pushConnectionActive = computed(() => rootStore.pushConnectionActive);
+const i18n = useI18n();
+</script>
+
 <template>
 	<span>
-		<div class="push-connection-lost primary-color" v-if="!pushConnectionActive">
-			<n8n-tooltip placement="bottom-end" >
-				<div slot="content">
-					Cannot connect to server.<br />
-					It is either down or you have a connection issue. <br />
-					It should reconnect automatically once the issue is resolved.
-				</div>
+		<div v-if="!pushConnectionActive" class="push-connection-lost primary-color">
+			<n8n-tooltip placement="bottom-end">
+				<template #content>
+					<div v-n8n-html="i18n.baseText('pushConnectionTracker.cannotConnectToServer')"></div>
+				</template>
 				<span>
-					<font-awesome-icon icon="exclamation-triangle" />&nbsp; Connection lost
+					<font-awesome-icon icon="exclamation-triangle" />&nbsp;
+					{{ i18n.baseText('pushConnectionTracker.connectionLost') }}
 				</span>
 			</n8n-tooltip>
 		</div>
 		<slot v-else />
 	</span>
 </template>
-
-<script lang="ts">
-import Vue from "vue";
-import { mapGetters } from "vuex";
-
-export default Vue.extend({
-	name: "PushConnectionTracker",
-	computed: {
-		...mapGetters(["pushConnectionActive"]),
-	},
-});
-</script>
